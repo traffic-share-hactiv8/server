@@ -67,12 +67,10 @@ module.exports = {
     },
     updateUser: (req, res) => {
         const id = req.params.id;
-        const updateOps = {}
-        for (const key in req.body) {
-            updateOps[key] = req.body[key]
-        }
+        const name = req.body.name;
+        const email = req.body.email;
         User.findByIdAndUpdate({ _id: id }, {
-            $set: { updateOps }
+            $set: { name, email}
         })
             .then(result => {
                 res.status(200).json({ message: "update success!", result })
