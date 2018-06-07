@@ -23,20 +23,20 @@ login existing user will get return token
 - password
 
 ### return data
-- token
+- header : Authorization (token)
 
 ## GET - /users
 get All user list
 
 ### required data
-- header : token
+- header : Authorization (token)
 
 ## GET - /users/:id
 get user by id
 
 ### required data 
 - id
-- header : token
+- header : Authorization (token)
 
 ### return data
 - User
@@ -46,19 +46,19 @@ update user
 
 ### required data
 - id
-- header : token
+- header : Authorization (token)
 
 ### return data
 - Result
 
-## POST - /users/deactivated/:id
+## POST - /users/deactivated
 deactivated current user
 
 ### required data
 - id
-- header : token
+- header : Authorization (token)
 
-##return data
+### return data
 - result
 
 ## POST - /users/activated
@@ -66,9 +66,54 @@ activated current user
 
 ### required data
 - id
-- header : token
+- header : Authorization (token)
 
-##return data
+### return data
+- result
+
+## GET - /timelines
+get all timeline sorted asc
+
+### required data
+- header : Authorization (token)
+
+### return data
+- Timelines
+
+## POST - /timelines
+create timeline 
+
+### required data
+- header : Authorization (token)
+- imageUrl
+- location
+- description
+
+### return data
+- result
+
+## GET - /timelines/currentUser
+get all timeline current user login
+
+### required data
+- header : Authorization (token)
+
+### return data
+- Timeline
+
+## PUT - /timelines/:id
+update timeline
+
+### required data 
+- header : Authorization (token)
+### return data
+- result
+
+## DELETE - /timelines/:id
+delete timeline
+### required data 
+- header : Authorization (token)
+### return data
 - result
 
 ## Database
