@@ -1,14 +1,22 @@
 var createError = require('http-errors');
 var express = require('express');
+require('dotenv').config();
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const cors = require('cors');
+const mongoose = require('mongoose');
+const url = `mongodb://${process.env.DB_USER}:${process.env.DB_PASSWORD}@ds247670.mlab.com:47670/traffic-sharedb`
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+const registerRouter = require('./routes/register');
+const loginRouter = require('./routes/login');
+const isAuthenticated = require('.//middleware/authentication');
 
 var app = express();
+
+mongoose.connect(url);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -22,7 +30,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/users', isAuthenticated, usersRouter);
+app.use('/register', registerRouter);
+app.use('/login', loginRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
