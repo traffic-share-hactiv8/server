@@ -51,7 +51,7 @@ update user
 ### return data
 - Result
 
-## PUT - /users/deactivated/:id
+## POST - /users/deactivated/:id
 deactivated current user
 
 ### required data
@@ -61,7 +61,7 @@ deactivated current user
 ##return data
 - result
 
-## PUT - /users/activated
+## POST - /users/activated
 activated current user
 
 ### required data
