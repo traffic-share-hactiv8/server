@@ -5,6 +5,8 @@ const timelineSchema = Schema({
     imageUrl : {type: String, required: true},
     location : {type: String, required: true},
     description : {type: String, required: true},
+    latitude : String,
+    longitude : String,
     userId : {type: Schema.Types.ObjectId, ref: 'User'}
 },
 {
