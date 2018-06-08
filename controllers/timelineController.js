@@ -3,6 +3,7 @@ const Timeline = require('../models/timelines');
 module.exports = {
     getAllTimeline : (req,res)=>{
         Timeline.find().sort({createdAt : 1})
+        .populate('userId')
         .then(timelines=>{
             res.status(200).json({message: "Retrieve Success", timelines})
         })
@@ -12,7 +13,7 @@ module.exports = {
     },
     createTl : (req,res)=>{
         const userId = req.user.id
-        imageUrl = req.body.imageUrl
+        imageUrl = req.file.cloudStoragePublicUrl
         location = req.body.location
         description  = req.body.description
         timeline = new Timeline({
@@ -32,6 +33,7 @@ module.exports = {
     getTLCurrentUser : (req,res)=> {
         const userId = req.user.id
         Timeline.find({userId})
+        .populate('userId')
         .then(timelines=>{
             res.status(200).json({message: "Retrieve TL Success", timelines})
         })
