@@ -1,4 +1,5 @@
 const Timeline = require('../models/timelines');
+const axios = require('axios');
 
 module.exports = {
     getAllTimeline : (req,res)=>{
@@ -12,23 +13,57 @@ module.exports = {
         });
     },
     createTl : (req,res)=>{
+
         const userId = req.user.id
         imageUrl = req.file.cloudStoragePublicUrl
         location = req.body.location
         description  = req.body.description
-        timeline = new Timeline({
-            imageUrl,
-            location,
-            description,
-            userId
-        })
-        timeline.save()
-        .then(result=>{
-            res.status(201).json({message: "create TL success", result})
-        })
-        .catch(err=>{
-            res.status(500).json({error:err})
-        })
+        function convertToQuery (string) {
+            let splitStr = string.split(',')
+            let removeSpace = []
+            splitStr.forEach(function (element) {
+              removeSpace.push(element.trim())
+            })
+            let address = removeSpace.join(',')
+            let addressSplit = address.split('')
+            for (var i = 0; i < addressSplit.length; i++) {
+              if (addressSplit[i] === ' ') {
+                addressSplit[i] = '+'
+              } else if (addressSplit[i] === ',') {
+                addressSplit[i] = ',+'
+              }
+            }
+            return addressSplit.join('')
+          }
+          let locationMap = location
+          let longitude = 0
+          let latitude = 0
+          axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${convertToQuery(locationMap)}&key=AIzaSyBn11t_9j9am22Zuan7gHnFPk30MRAY7j4`)
+            .then((response) => {
+              let longitude = response.data.results[0].geometry.location.lng
+              let latitude = response.data.results[0].geometry.location.lat
+              console.log(longitude, latitude)
+              timeline = new Timeline({
+                  imageUrl,
+                  location,
+                  description,
+                  latitude ,
+                  longitude,
+                  userId
+              })
+              timeline.save()
+              .then(result=>{
+                  res.status(201).json({message: "create TL success", result})
+              })
+              .catch(err=>{
+                  res.status(500).json({error:err})
+              })
+            })
+            .catch((err) => {
+              console.log(err);
+            })
+        // let longitude = longlatit[0];
+        // let latitude = longlatit[1];
     },
     getTLCurrentUser : (req,res)=> {
         const userId = req.user.id
@@ -87,4 +122,37 @@ module.exports = {
             res.status(400).json({error:err})
         })
     }
+}
+
+
+function getlatit(locationInp){
+    function convertToQuery (string) {
+        let splitStr = string.split(',')
+        let removeSpace = []
+        splitStr.forEach(function (element) {
+          removeSpace.push(element.trim())
+        })
+        let address = removeSpace.join(',')
+        let addressSplit = address.split('')
+        for (var i = 0; i < addressSplit.length; i++) {
+          if (addressSplit[i] === ' ') {
+            addressSplit[i] = '+'
+          } else if (addressSplit[i] === ',') {
+            addressSplit[i] = ',+'
+          }
+        }
+        return addressSplit.join('')
+      }
+      let location = locationInp
+      let longitude = 0
+      let latitude = 0
+      axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${convertToQuery(location)}&key=AIzaSyBn11t_9j9am22Zuan7gHnFPk30MRAY7j4`)
+        .then((response) => {
+          longitude = response.data.results[0].geometry.location.lng
+          latitude = response.data.results[0].geometry.location.lat
+          console.log(longitude, latitude)
+        })
+        .catch((err) => {
+          return err;
+        })
 }
